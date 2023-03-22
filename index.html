@@ -1,0 +1,76 @@
+<html>
+    <head>
+        <title>JS Neural Net</title>
+    </head>
+    <body>
+        <script>
+            
+            function sigmoid(x) {
+                return 1 / (1 + Math.exp(-x));
+            }
+
+            function drawNeuralNetwork(layerSizes) {
+
+                // Create an SVG element to hold the visualization
+                const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                svg.setAttribute("width", "100%");
+                svg.setAttribute("height", "100%");
+                
+                // Calculate the size of each layer based on the maximum number of nodes
+                const maxNodes = Math.max(...layerSizes);
+                const layerHeight = 50;
+                const nodeSize = 20;
+                const offset = 20;
+                const layerWidth = (maxNodes * nodeSize);
+
+                // Loop over each layer in the network and add nodes to the SVG
+                let x = 0;
+                for (let i = 0; i < layerSizes.length; i++) {
+                    const layerSize = layerSizes[i];
+                    const y = 50;
+
+                    // Add a circle for each node in the layer
+                    for (let j = 0; j < layerSize; j++) {
+                        const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                        circle.setAttribute("cx", x + offset);
+                        circle.setAttribute("cy", y + (j * nodeSize));
+                        circle.setAttribute("r", nodeSize / 2);
+                        circle.setAttribute("fill", "white");
+                        circle.setAttribute("stroke", "black");
+                        circle.setAttribute("stroke-width", "2");
+                        svg.appendChild(circle);
+                    }
+
+                    // Add a line to connect the nodes in this layer to the next layer
+                    if (i < layerSizes.length - 1) {
+                        const nextLayerSize = layerSizes[i + 1];
+                        const nextY = 50;
+                        for (let j = 0; j < layerSize; j++) {
+                            for (let k = 0; k < nextLayerSize; k++) {
+                                const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                                line.setAttribute("x1", x + offset);
+                                line.setAttribute("y1", y + (j * nodeSize));
+                                line.setAttribute("x2", x + layerWidth + offset);
+                                line.setAttribute("y2", nextY + (k * nodeSize));
+                                line.setAttribute("stroke", "black");
+                                line.setAttribute("stroke-width", "2");
+                                svg.appendChild(line);
+                            }
+                        }
+                    }
+
+                    // Increment the X position for the next layer
+                    x += layerWidth;
+                }
+
+                // Add the SVG to the document
+                document.body.appendChild(svg);
+            }
+
+
+            const layerSizes = [10, 4, 8, 10]; // Example network with 784 input nodes, 2 hidden layers with 32 nodes each, and 10 output nodes
+            drawNeuralNetwork(layerSizes);
+
+        </script>
+    </body>
+</html>
