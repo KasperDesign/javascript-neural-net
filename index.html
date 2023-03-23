@@ -1,6 +1,26 @@
 <html>
     <head>
         <title>JS Neural Net</title>
+
+        <style>
+
+            html,
+            body, svg {
+                padding: 0;
+                margin: 0;
+            }
+
+            line {
+                stroke: #aaa7;
+            }
+
+            circle {
+                fill: #333a;
+                stroke: rgb(23, 46, 73);
+            }
+
+        </style>
+
     </head>
     <body>
         <script>
@@ -11,29 +31,37 @@
 
             function drawNeuralNetwork(layerSizes) {
 
+                const width = window.innerWidth;
+                const height = window.innerHeight;
+
                 // Create an SVG element to hold the visualization
                 const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-                svg.setAttribute("width", "100%");
-                svg.setAttribute("height", "100%");
+                svg.setAttribute("width", width + "px");
+                svg.setAttribute("height", height + "px");
                 
+                const largest = Math.max(...layerSizes);
+                console.log("largest", largest);
+
                 // Calculate the size of each layer based on the maximum number of nodes
                 const maxNodes = Math.max(...layerSizes);
-                const layerHeight = 50;
+
                 const nodeSize = 20;
-                const offset = 20;
+                const offset = (height / (largest + 1)) - nodeSize;
                 const layerWidth = (maxNodes * nodeSize);
 
                 // Loop over each layer in the network and add nodes to the SVG
                 let x = 0;
                 for (let i = 0; i < layerSizes.length; i++) {
                     const layerSize = layerSizes[i];
-                    const y = 50;
+                    const topMargin = ((largest - layerSize) + 1 / 2) * offset;
+                    const y = topMargin;
+                    const localOffset = offset + topMargin;
 
                     // Add a circle for each node in the layer
                     for (let j = 0; j < layerSize; j++) {
                         const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
                         circle.setAttribute("cx", x + offset);
-                        circle.setAttribute("cy", y + (j * nodeSize));
+                        circle.setAttribute("cy", localOffset + (j * (nodeSize + offset)));
                         circle.setAttribute("r", nodeSize / 2);
                         circle.setAttribute("fill", "white");
                         circle.setAttribute("stroke", "black");
@@ -44,14 +72,15 @@
                     // Add a line to connect the nodes in this layer to the next layer
                     if (i < layerSizes.length - 1) {
                         const nextLayerSize = layerSizes[i + 1];
-                        const nextY = 50;
+                        const nextTopMargin = ((largest - nextLayerSize) + 1 / 2) * offset;
+                        const nextLocalOffset = offset + nextTopMargin;
                         for (let j = 0; j < layerSize; j++) {
                             for (let k = 0; k < nextLayerSize; k++) {
                                 const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
                                 line.setAttribute("x1", x + offset);
-                                line.setAttribute("y1", y + (j * nodeSize));
+                                line.setAttribute("y1", localOffset + (j * (nodeSize + offset)));
                                 line.setAttribute("x2", x + layerWidth + offset);
-                                line.setAttribute("y2", nextY + (k * nodeSize));
+                                line.setAttribute("y2", nextLocalOffset + (k * (nodeSize + offset)));
                                 line.setAttribute("stroke", "black");
                                 line.setAttribute("stroke-width", "2");
                                 svg.appendChild(line);
