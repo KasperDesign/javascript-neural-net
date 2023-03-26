@@ -10,21 +10,87 @@
                 margin: 0;
             }
 
+            html {
+                background-color: #1d1f24;
+            }
+
             line {
                 stroke: #aaa7;
             }
 
+            line:hover {
+                stroke: #900a;
+                stroke-width: 3px;
+            }
+
             circle {
-                fill: #333a;
-                stroke: rgb(23, 46, 73);
+                fill: #888;
+                stroke: rgb(23, 46, 73, 0.5);
+            }
+
+            circle:hover {
+                fill: #fff;
+                stroke: #a008;
+                stroke-width: 2px;
+            }
+
+            input {
+                display: block;
+            }
+
+            input[disabled] {
+                opacity: 0;
+            }
+
+            .controls {
+                position: fixed;
+                right: 10px;
+                top: 10px;
             }
 
         </style>
 
     </head>
     <body>
+
+        <div class="controls">
+            <input type="range" min="2" max="10" id="input-layers" value="5" onchange="updateLayers()"><!-- layers -->
+            <br>
+            <input type="number" min="2" max="10" id="input-nodes-0" value="6" onchange="updateLayers()"><!-- layer 0 nodes -->
+            <input type="number" min="2" max="10" id="input-nodes-1" value="10" onchange="updateLayers()"><!-- layer 1 nodes -->
+            <input type="number" min="2" max="10" id="input-nodes-2" value="4" onchange="updateLayers()"><!-- layer 2 nodes -->
+            <input type="number" min="2" max="10" id="input-nodes-3" value="8" onchange="updateLayers()"><!-- layer 3 nodes -->
+            <input type="number" min="2" max="10" id="input-nodes-4" value="10" onchange="updateLayers()"><!-- layer 4 nodes -->
+            <input type="number" min="2" max="10" id="input-nodes-5" value="4" onchange="updateLayers()"><!-- layer 5 nodes -->
+            <input type="number" min="2" max="10" id="input-nodes-6" value="7" onchange="updateLayers()"><!-- layer 6 nodes -->
+            <input type="number" min="2" max="10" id="input-nodes-7" value="5" onchange="updateLayers()"><!-- layer 7 nodes -->
+            <input type="number" min="2" max="10" id="input-nodes-8" value="3" onchange="updateLayers()"><!-- layer 8 nodes -->
+            <input type="number" min="2" max="10" id="input-nodes-9" value="10" onchange="updateLayers()"><!-- layer 9 nodes -->
+        </div>
+
+        <svg id="neural-net-svg"></svg>
+
         <script>
             
+            function updateLayers() {
+                let layers = document.getElementById("input-layers").value;
+                console.log("update layers", layers);
+                let netTopology = [];
+
+                for (let i = 0; i < 10; i++) {
+                    let n = document.getElementById("input-nodes-" + i);
+                    if (i < layers) {
+                        netTopology.push(n.value);
+                        n.disabled = false;
+                    } else {
+                        n.disabled = true;
+                    }
+                }
+
+                console.log("NET TOPOLOGY", netTopology);
+                drawNeuralNetwork(netTopology);
+            }
+
             function sigmoid(x) {
                 return 1 / (1 + Math.exp(-x));
             }
@@ -35,12 +101,19 @@
                 const height = window.innerHeight;
 
                 // Create an SVG element to hold the visualization
-                const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                const svg = document.getElementById("neural-net-svg");
+                svg.innerHTML = ""; // clear previous
                 svg.setAttribute("width", width + "px");
                 svg.setAttribute("height", height + "px");
                 
+                const connections = document.createElementNS("http://www.w3.org/2000/svg", "g");
+                const nodes = document.createElementNS("http://www.w3.org/2000/svg", "g");
+                nodes.setAttribute("id", "nodes");
+
+                svg.appendChild(connections);
+                svg.appendChild(nodes);
+
                 const largest = Math.max(...layerSizes);
-                console.log("largest", largest);
 
                 // Calculate the size of each layer based on the maximum number of nodes
                 const maxNodes = Math.max(...layerSizes);
@@ -57,15 +130,6 @@
                     const y = topMargin;
                     const localOffset = offset + topMargin;
 
-                    // Add a circle for each node in the layer
-                    for (let j = 0; j < layerSize; j++) {
-                        const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-                        circle.setAttribute("cx", x + offset);
-                        circle.setAttribute("cy", localOffset + (j * (nodeSize + offset)));
-                        circle.setAttribute("r", nodeSize / 2);
-                        svg.appendChild(circle);
-                    }
-
                     // Add a line to connect the nodes in this layer to the next layer
                     if (i < layerSizes.length - 1) {
                         const nextLayerSize = layerSizes[i + 1];
@@ -78,9 +142,18 @@
                                 line.setAttribute("y1", localOffset + (j * (nodeSize + offset)));
                                 line.setAttribute("x2", x + layerWidth + offset);
                                 line.setAttribute("y2", nextLocalOffset + (k * (nodeSize + offset)));
-                                svg.appendChild(line);
+                                connections.appendChild(line);
                             }
                         }
+                    }
+
+                    // Add a circle for each node in the layer
+                    for (let j = 0; j < layerSize; j++) {
+                        const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                        circle.setAttribute("cx", x + offset);
+                        circle.setAttribute("cy", localOffset + (j * (nodeSize + offset)));
+                        circle.setAttribute("r", nodeSize / 2);
+                        nodes.appendChild(circle);
                     }
 
                     // Increment the X position for the next layer
@@ -92,8 +165,7 @@
             }
 
 
-            const layerSizes = [10, 4, 8, 10]; // Example network with 784 input nodes, 2 hidden layers with 32 nodes each, and 10 output nodes
-            drawNeuralNetwork(layerSizes);
+            updateLayers();
 
         </script>
     </body>
