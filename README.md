@@ -11,3 +11,33 @@ But wait, there's more! I'm also including a user interface that will allow you 
 Now, I know what you're thinking. "This all sounds great, but why on earth would I use a JavaScript neural network?" Well, my friend, that's a great question. I have no idea. But, maybe you're a JavaScript enthusiast who loves pushing the limits of what can be done in the browser. Or, maybe you just want to see if you can create a neural network using JavaScript - who am I to judge?
 
 In any case, I'm excited to see what kind of terrible, yet amazing, projects you'll create with this repository. So go ahead and clone it, modify it, and let's see what kind of chaos we can create together!
+
+
+
+#JSON
+
+```
+{
+  "input_size": 784,
+  "hidden_layers": [
+    {
+      "neurons": 10,
+      "activation": "relu",
+      "weights": [[...], [...], ...],
+      "biases": [...]
+    },
+    {
+      "neurons": 8,
+      "activation": "sigmoid",
+      "weights": [[...], [...], ...],
+      "biases": [...]
+    }
+  ],
+  "output_layer": {
+    "neurons": 10,
+    "activation": "softmax",
+    "weights": [[...], [...], ...],
+    "biases": [...]
+  }
+}
+```
