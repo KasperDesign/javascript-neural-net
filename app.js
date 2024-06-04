@@ -59,6 +59,9 @@ document.getElementById('create-train-model').addEventListener('click', async ()
 
   const { model: trainedModel, status } = await createAndTrainModel(epochs, batchSize, optimizer);
   model = trainedModel;  // Assign to the global model variable
+
+  console.log("model", model.model);
+
   document.getElementById('model-status').innerHTML = `Model Status: <b class="${status.toLowerCase()}">${status}</b>`;
 });
 

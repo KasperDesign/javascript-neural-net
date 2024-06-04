@@ -1,9 +1,11 @@
 body {
     font-family: "Ubuntu", Arial, sans-serif;
     text-align: center;
+    background-color: #111;
+    color: #fff;
 }
 canvas {
-    border: 1px solid black;
+    border: 1px solid #777;
 }
 hr {
     width: 100%;
@@ -41,7 +43,6 @@ button {
     -webkit-user-select: none;
     touch-action: manipulation;
 }
-
 button:hover,
 button:focus {
     background-color: #F082AC;
@@ -51,6 +52,13 @@ input {
 }
 select {
     width: 210px;
+}
+a,
+a:visited,
+a:active,
+a:link,
+a:hover {
+    color: #F082AC;
 }
 #container {
     display: flex;
@@ -81,7 +89,7 @@ select {
     color: #a00;
 }
 .training {
-    color: #00c;
+    color: #4cd2ea;
 }
 .trained {
     color: #0a0;
