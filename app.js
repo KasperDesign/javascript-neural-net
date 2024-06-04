@@ -1,3 +1,5 @@
+const drawingContainer = document.getElementById('drawing-container');
+
 let data = [];
 let currentIndex = 0;
 let model;
@@ -53,6 +55,7 @@ document.getElementById('create-train-model').addEventListener('click', async ()
   const optimizer = document.getElementById('optimizer').value;
 
   document.getElementById('model-status').innerHTML = `Model Status: <b class="training">Training...</b>`;
+  drawingContainer.style.visibility = 'hidden';
 
   const { model: trainedModel, status } = await createAndTrainModel(epochs, batchSize, optimizer);
   model = trainedModel;  // Assign to the global model variable
@@ -93,7 +96,7 @@ async function createAndTrainModel(epochs, batchSize, optimizer) {
     }
   });
 
-  document.getElementById('drawing-container').style.visibility = 'visible';
+  drawingContainer.style.visibility = 'visible';
 
   return { model, status: 'Trained' };
 }

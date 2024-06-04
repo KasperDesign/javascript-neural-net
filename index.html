@@ -6,6 +6,11 @@
 </head>
 <body>
   <div id="container">
+
+    <h1>Digit Recognition and Visualization Neural Net</h1>
+
+    <p>Train and visualize a Neural Network in JavaScript using tensorflow.js and the <a href="https://archive.ics.uci.edu/dataset/80/optical+recognition+of+handwritten+digits">Optical Recognition of Handwritten Digits Dataset</a></p>
+
     <div id="number-indicator">Number: </div>
     <canvas id="canvas" width="320" height="320"></canvas>
     <div class="controls">
@@ -31,7 +36,7 @@
             <select id="optimizer">
               <option value="adadelta">adadelta</option>
               <option value="adagrad">adagrad</option>
-              <option value="adam">adam</option>
+              <option value="adam" selected>adam</option>
               <option value="adamax">adamax</option>
               <option value="rmsprop">rmsprop</option>
               <option value="sgd">sgd</option>
@@ -59,7 +64,7 @@
   </div>
 
   <div>
-    <p>Created by <a href="https://kasper.design">kasper.design</a></p>
+    <p>Created by <a href="https://kasper.design">kasper.design</a> - View source on <a href="https://github.com/kappisan/javascript-neural-net">GitHub</a></p>
   </div>
 
 
