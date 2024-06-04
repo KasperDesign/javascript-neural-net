@@ -1,5 +1,6 @@
 let data = [];
 let currentIndex = 0;
+let model;
 
 // Load the data from the file
 fetch('data.txt')
@@ -50,7 +51,8 @@ document.getElementById('create-train-model').addEventListener('click', async ()
   const epochs = parseInt(document.getElementById('epochs').value);
   const batchSize = parseInt(document.getElementById('batch-size').value);
 
-  const { model, status } = await createAndTrainModel(epochs, batchSize);
+  const { model: trainedModel, status } = await createAndTrainModel(epochs, batchSize);
+  model = trainedModel;  // Assign to the global model variable
   document.getElementById('model-status').innerText = `Model Status: ${status}`;
 });
 

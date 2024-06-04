@@ -28,8 +28,19 @@
     </div>
     <div id="model-status">Model Status: Not Trained</div>
     <div id="model-output"></div>
+
+    <hr>
+
+    <div id="drawing-container">
+      <canvas id="drawing-canvas" width="320" height="320"></canvas>
+      <br>
+      <button id="clear-drawing">Clear</button>
+      <button id="predict-drawing">Predict</button>
+      <div id="prediction-result">Prediction: </div>
+    </div>
   </div>
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+  <script src="tfjs.js"></script> <!-- https://cdn.jsdelivr.net/npm/@tensorflow/tfjs -->
   <script src="app.js"></script>
+  <script src="draw.js"></script>
 </body>
 </html>
