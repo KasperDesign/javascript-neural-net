@@ -7,7 +7,7 @@ canvas {
 }
 hr {
     width: 100%;
-    border: 1px solid black;
+    border: 1px solid #777;
 }
 table {
     margin: 10px;
@@ -47,6 +47,12 @@ button:hover,
 button:focus {
     background-color: #F082AC;
 }
+input {
+    width: 200px;
+}
+select {
+    width: 210px;
+}
 #container {
     display: flex;
     flex-direction: column;
@@ -64,10 +70,20 @@ button:focus {
 }
 #model-output {
     padding: 20px;
+    font-family:'Courier New', Courier, monospace;
 }
 #prediction-result {
     margin-top: 20px;
 }
 .controls {
     margin: 20px;
+}
+.not-trained {
+    color: #a00;
+}
+.training {
+    color: #00c;
+}
+.trained {
+    color: #0a0;
 }

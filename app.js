@@ -50,19 +50,27 @@ function visualizeNumber(index) {
 document.getElementById('create-train-model').addEventListener('click', async () => {
   const epochs = parseInt(document.getElementById('epochs').value);
   const batchSize = parseInt(document.getElementById('batch-size').value);
+  const optimizer = document.getElementById('optimizer').value;
 
-  const { model: trainedModel, status } = await createAndTrainModel(epochs, batchSize);
+  document.getElementById('model-status').innerHTML = `Model Status: <b class="training">Training...</b>`;
+
+  const { model: trainedModel, status } = await createAndTrainModel(epochs, batchSize, optimizer);
   model = trainedModel;  // Assign to the global model variable
-  document.getElementById('model-status').innerText = `Model Status: ${status}`;
+  document.getElementById('model-status').innerHTML = `Model Status: <b class="${status.toLowerCase()}">${status}</b>`;
 });
 
-async function createAndTrainModel(epochs, batchSize) {
+async function createAndTrainModel(epochs, batchSize, optimizer) {
+
+  console.log("optimizer", optimizer);
+
   const model = tf.sequential();
   model.add(tf.layers.dense({ inputShape: [64], units: 128, activation: 'relu' }));
+  
   model.add(tf.layers.dense({ units: 64, activation: 'relu' }));
+
   model.add(tf.layers.dense({ units: 10, activation: 'softmax' }));
 
-  model.compile({ optimizer: 'adam', loss: 'sparseCategoricalCrossentropy', metrics: ['accuracy'] });
+  model.compile({ optimizer: optimizer, loss: 'sparseCategoricalCrossentropy', metrics: ['accuracy'] });
 
   // Prepare the data
   const inputs = data.map(item => item.slice(0, 64));
@@ -72,13 +80,14 @@ async function createAndTrainModel(epochs, batchSize) {
   const xs = tf.tensor2d(inputs, [inputs.length, 64], 'float32');
   const ys = tf.tensor1d(labels, 'float32');
 
+  document.getElementById('model-output').innerHTML = ""; // reset table
+
   await model.fit(xs, ys, {
     epochs: epochs,
     batchSize: batchSize,
     callbacks: {
       onEpochEnd: (epoch, logs) => {
         const output = `Epoch ${epoch + 1}: loss = ${logs.loss}, accuracy = ${logs.acc}`;
-        console.log(output);
         document.getElementById('model-output').innerHTML += `${output}<br>`;
       }
     }

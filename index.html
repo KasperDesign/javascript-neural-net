@@ -25,15 +25,29 @@
           <th><label for="batch-size">Batch Size:</label></th>
           <td><input type="number" id="batch-size" value="32" min="1"></td>
         </tr>
+        <tr>
+          <th><label for="optimizer">Optimizer</label></th>
+          <td>
+            <select id="optimizer">
+              <option value="adadelta">adadelta</option>
+              <option value="adagrad">adagrad</option>
+              <option value="adam">adam</option>
+              <option value="adamax">adamax</option>
+              <option value="rmsprop">rmsprop</option>
+              <option value="sgd">sgd</option>
+            </select>
+          </td>
+        </tr>
       </table>
       <button id="create-train-model">Create and Train Model</button>
     </div>
-    <div id="model-status">Model Status: Not Trained</div>
+    <div id="model-status">Model Status: <b class="not-trained">Not Trained</b></div>
     <div id="model-output"></div>
 
     <hr>
 
     <div id="drawing-container" style="visibility: hidden">
+      <h3>Draw here</h3>
       <canvas id="drawing-canvas" width="320" height="320"></canvas>
       <br>
       <div class="controls">
