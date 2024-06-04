@@ -5,7 +5,6 @@ let currentIndex = 0;
 fetch('data.txt')
   .then(response => response.text())
   .then(text => {
-    console.log("data loaded", text);
     data = text.trim().split('\n').map(line => line.split(',').map(Number));
     visualizeNumber(currentIndex);
   });
@@ -32,7 +31,7 @@ document.getElementById('next').addEventListener('click', () => {
 // Function to visualize the number
 function visualizeNumber(index) {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  const numberData = data[index];
+  const numberData = data[index].slice(); // Copy the data to avoid modifying the original
   const classCode = numberData.pop(); // The last value is the class code
   document.getElementById('number-indicator').innerText = `Number: ${classCode}`;
 
@@ -44,4 +43,44 @@ function visualizeNumber(index) {
       ctx.fillRect(j * 40, i * 40, 40, 40);
     }
   }
+}
+
+// Neural Network Setup
+document.getElementById('create-train-model').addEventListener('click', async () => {
+  const epochs = parseInt(document.getElementById('epochs').value);
+  const batchSize = parseInt(document.getElementById('batch-size').value);
+
+  const { model, status } = await createAndTrainModel(epochs, batchSize);
+  document.getElementById('model-status').innerText = `Model Status: ${status}`;
+});
+
+async function createAndTrainModel(epochs, batchSize) {
+  const model = tf.sequential();
+  model.add(tf.layers.dense({ inputShape: [64], units: 128, activation: 'relu' }));
+  model.add(tf.layers.dense({ units: 64, activation: 'relu' }));
+  model.add(tf.layers.dense({ units: 10, activation: 'softmax' }));
+
+  model.compile({ optimizer: 'adam', loss: 'sparseCategoricalCrossentropy', metrics: ['accuracy'] });
+
+  // Prepare the data
+  const inputs = data.map(item => item.slice(0, 64));
+  const labels = data.map(item => item[64]);
+
+  // Convert inputs to float32 tensor
+  const xs = tf.tensor2d(inputs, [inputs.length, 64], 'float32');
+  const ys = tf.tensor1d(labels, 'float32');
+
+  await model.fit(xs, ys, {
+    epochs: epochs,
+    batchSize: batchSize,
+    callbacks: {
+      onEpochEnd: (epoch, logs) => {
+        const output = `Epoch ${epoch + 1}: loss = ${logs.loss}, accuracy = ${logs.acc}`;
+        console.log(output);
+        document.getElementById('model-output').innerHTML += `${output}<br>`;
+      }
+    }
+  });
+
+  return { model, status: 'Trained' };
 }

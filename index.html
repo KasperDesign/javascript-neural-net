@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Digit Visualization</title>
+  <title>Digit Recognition and Visualization</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -10,17 +10,24 @@
     canvas {
       border: 1px solid black;
     }
+    hr {
+      width: 100%;
+      border: 1px solid black;
+    }
     #container {
       display: flex;
       flex-direction: column;
       align-items: center;
     }
-    #controls {
+    #controls, #model-controls {
       margin-top: 10px;
     }
-    #number-indicator {
+    #number-indicator, #model-status {
       margin-top: 10px;
       font-size: 20px;
+    }
+    .form-group {
+      margin: 10px;
     }
   </style>
 </head>
@@ -32,7 +39,24 @@
       <button id="next">Next</button>
     </div>
     <div id="number-indicator">Number: </div>
+
+    <hr>
+
+    <div id="model-controls">
+      <div class="form-group">
+        <label for="epochs">Epochs:</label>
+        <input type="number" id="epochs" value="10" min="1">
+      </div>
+      <div class="form-group">
+        <label for="batch-size">Batch Size:</label>
+        <input type="number" id="batch-size" value="32" min="1">
+      </div>
+      <button id="create-train-model">Create and Train Model</button>
+    </div>
+    <div id="model-status">Model Status: Not Trained</div>
+    <div id="model-output"></div>
   </div>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
   <script src="app.js"></script>
 </body>
 </html>
