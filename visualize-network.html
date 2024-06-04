@@ -1,0 +1,231 @@
+<html>
+    <head>
+        <title>JS Neural Net</title>
+
+        <style>
+
+            html,
+            body, svg {
+                padding: 0;
+                margin: 0;
+                color: #fff;
+                font-family: Arial, Helvetica, sans-serif;
+            }
+
+            html {
+                background: rgb(0,2,36);
+                background: linear-gradient(90deg, rgba(0,2,36,1) 0%, rgba(12,0,31,1) 100%);
+            }
+
+            line {
+                stroke: #aaa7;
+            }
+
+            line:hover {
+                stroke: #fff;
+                stroke-width: 3px;
+            }
+
+            circle {
+                fill: rgb(211, 214, 255);
+                stroke: rgba(42, 71, 104, 0.651);
+                stroke-width: 2px;
+            }
+
+            circle:hover {
+                fill: #fff;
+                stroke: rgba(34, 28, 117, 0.533);
+                stroke-width: 3px;
+            }
+
+            input {
+                display: block;
+                border-radius: 6px;
+                border-width: 0;
+                height: 30px;
+                padding: 4px 6px 4px 20px;
+                margin: 4px;
+            }
+
+            input[disabled] {
+                opacity: 0;
+            }
+
+            .controls {
+                position: fixed;
+                right: 10px;
+                top: 10px;
+            }
+
+        </style>
+
+    </head>
+    <body>
+
+        <div class="controls">
+            <label>Layers</label>
+            <input type="range" min="2" max="10" id="input-layers" value="5" onchange="updateLayers()"><!-- layers -->
+            <br>
+            <input type="number" min="2" max="10" id="input-neurons-0" value="6" onchange="updateLayers()"><!-- layer 0 neurons -->
+            <input type="number" min="2" max="10" id="input-neurons-1" value="10" onchange="updateLayers()"><!-- layer 1 neurons -->
+            <input type="number" min="2" max="10" id="input-neurons-2" value="4" onchange="updateLayers()"><!-- layer 2 neurons -->
+            <input type="number" min="2" max="10" id="input-neurons-3" value="8" onchange="updateLayers()"><!-- layer 3 neurons -->
+            <input type="number" min="2" max="10" id="input-neurons-4" value="10" onchange="updateLayers()"><!-- layer 4 neurons -->
+            <input type="number" min="2" max="10" id="input-neurons-5" value="4" onchange="updateLayers()"><!-- layer 5 neurons -->
+            <input type="number" min="2" max="10" id="input-neurons-6" value="7" onchange="updateLayers()"><!-- layer 6 neurons -->
+            <input type="number" min="2" max="10" id="input-neurons-7" value="5" onchange="updateLayers()"><!-- layer 7 neurons -->
+            <input type="number" min="2" max="10" id="input-neurons-8" value="3" onchange="updateLayers()"><!-- layer 8 neurons -->
+            <input type="number" min="2" max="10" id="input-neurons-9" value="10" onchange="updateLayers()"><!-- layer 9 neurons -->
+        </div>
+
+        <svg id="neural-net-svg"></svg>
+
+        <script>
+
+            class Neuron {
+                constructor(layer) {
+                    this.layer = layer;
+                    this.weights = []; // weights for each connection
+                    this.biases = []; // biases for each connection
+                    this.connections = []; // list of connected neurons
+                }
+
+                addConnection(neuron, weight, bias) {
+                    this.connections.push(neuron);
+                    this.weights.push(weight);
+                    this.biases.push(bias);
+                }
+
+                activate(input) {
+                    let sum = 0;
+                    for (let i = 0; i < this.connections.length; i++) {
+                    sum += this.weights[i] * this.connections[i].activate(input);
+                    }
+                    return sigmoid(sum + this.biases);
+                }
+
+                // Helper function to apply the sigmoid activation function
+                sigmoid(x) {
+                    return 1 / (1 + Math.exp(-x));
+                }
+
+                // Helper function to display the connections and weights
+                displayConnections() {
+                    console.log("Connections:");
+                    for (let i = 0; i < this.connections.length; i++) {
+                        console.log(
+                            "- " +
+                            this.connections[i] +
+                            " (weight: " +
+                            this.weights[i] +
+                            ", bias: " +
+                            this.biases[i] +
+                            ")"
+                        );
+                    }
+                }
+            }
+            
+            function updateLayers() {
+                let layers = document.getElementById("input-layers").value;
+                console.log("update layers", layers);
+                let netTopology = [];
+
+                for (let i = 0; i < 10; i++) {
+                    let n = document.getElementById("input-neurons-" + i);
+                    if (i < layers) {
+                        netTopology.push(n.value);
+                        n.disabled = false;
+                    } else {
+                        n.disabled = true;
+                    }
+                }
+
+                console.log("NET TOPOLOGY", netTopology);
+                drawNeuralNetwork(netTopology);
+            }
+
+            function drawNeuralNetwork(layerSizes) {
+
+                let neurons = [];
+
+                const width = window.innerWidth;
+                const height = window.innerHeight;
+
+                // Create an SVG element to hold the visualization
+                const svg = document.getElementById("neural-net-svg");
+                svg.innerHTML = ""; // clear previous
+                svg.setAttribute("width", width + "px");
+                svg.setAttribute("height", height + "px");
+                
+                const connections = document.createElementNS("http://www.w3.org/2000/svg", "g");
+                const nodes = document.createElementNS("http://www.w3.org/2000/svg", "g");
+                nodes.setAttribute("id", "nodes");
+
+                svg.appendChild(connections);
+                svg.appendChild(nodes);
+
+                const largest = Math.max(...layerSizes);
+
+                // Calculate the size of each layer based on the maximum number of nodes
+                const maxNodes = Math.max(...layerSizes);
+
+                const nodeSize = 20;
+                const offset = (height / (largest + 1)) - nodeSize;
+                const layerWidth = (maxNodes * nodeSize);
+
+                // Loop over each layer in the network and add nodes to the SVG
+                let x = 0;
+                for (let i = 0; i < layerSizes.length; i++) {
+
+                    let layerNeurons = [];
+
+                    const layerSize = layerSizes[i];
+                    const topMargin = ((largest - layerSize) + 1 / 2) * offset;
+                    const y = topMargin;
+                    const localOffset = offset + topMargin;
+
+                    // Add a line to connect the nodes in this layer to the next layer
+                    if (i < layerSizes.length - 1) {
+                        const nextLayerSize = layerSizes[i + 1];
+                        const nextTopMargin = ((largest - nextLayerSize) + 1 / 2) * offset;
+                        const nextLocalOffset = offset + nextTopMargin;
+                        for (let j = 0; j < layerSize; j++) {
+                            for (let k = 0; k < nextLayerSize; k++) {
+                                const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                                line.setAttribute("x1", x + offset);
+                                line.setAttribute("y1", localOffset + (j * (nodeSize + offset)));
+                                line.setAttribute("x2", x + layerWidth + offset);
+                                line.setAttribute("y2", nextLocalOffset + (k * (nodeSize + offset)));
+                                connections.appendChild(line);
+                            }
+                        }
+                    }
+
+                    // Add a circle for each node in the layer
+                    for (let j = 0; j < layerSize; j++) {
+                        const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                        circle.setAttribute("cx", x + offset);
+                        circle.setAttribute("cy", localOffset + (j * (nodeSize + offset)));
+                        circle.setAttribute("r", nodeSize / 2);
+                        nodes.appendChild(circle);
+                        layerNeurons.push(new Neuron(i));
+                    }
+
+                    neurons.push(layerNeurons);
+
+                    // Increment the X position for the next layer
+                    x += layerWidth;
+                }
+                console.log("neurons", neurons);
+
+                // Add the SVG to the document
+                document.body.appendChild(svg);
+            }
+
+
+            updateLayers();
+
+        </script>
+    </body>
+</html>
