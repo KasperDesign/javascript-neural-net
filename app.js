@@ -84,5 +84,7 @@ async function createAndTrainModel(epochs, batchSize) {
     }
   });
 
+  document.getElementById('drawing-container').style.visibility = 'visible';
+
   return { model, status: 'Trained' };
 }

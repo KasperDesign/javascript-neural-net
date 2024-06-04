@@ -6,24 +6,26 @@
 </head>
 <body>
   <div id="container">
+    <div id="number-indicator">Number: </div>
     <canvas id="canvas" width="320" height="320"></canvas>
-    <div id="controls">
+    <div class="controls">
       <button id="prev">Previous</button>
       <button id="next">Next</button>
     </div>
-    <div id="number-indicator">Number: </div>
 
     <hr>
 
     <div id="model-controls">
-      <div class="form-group">
-        <label for="epochs">Epochs:</label>
-        <input type="number" id="epochs" value="10" min="1">
-      </div>
-      <div class="form-group">
-        <label for="batch-size">Batch Size:</label>
-        <input type="number" id="batch-size" value="32" min="1">
-      </div>
+      <table>
+        <tr>
+          <th><label for="epochs">Epochs:</label></th>
+          <td><input type="number" id="epochs" value="10" min="1"></td>
+        </tr>
+        <tr>
+          <th><label for="batch-size">Batch Size:</label></th>
+          <td><input type="number" id="batch-size" value="32" min="1"></td>
+        </tr>
+      </table>
       <button id="create-train-model">Create and Train Model</button>
     </div>
     <div id="model-status">Model Status: Not Trained</div>
@@ -31,14 +33,22 @@
 
     <hr>
 
-    <div id="drawing-container">
+    <div id="drawing-container" style="visibility: hidden">
       <canvas id="drawing-canvas" width="320" height="320"></canvas>
       <br>
-      <button id="clear-drawing">Clear</button>
-      <button id="predict-drawing">Predict</button>
+      <div class="controls">
+        <button id="clear-drawing">Clear</button>
+        <button id="predict-drawing">Predict</button>
+      </div>
       <div id="prediction-result">Prediction: </div>
     </div>
   </div>
+
+  <div>
+    <p>Created by <a href="https://kasper.design">kasper.design</a></p>
+  </div>
+
+
   <script src="tfjs.js"></script> <!-- https://cdn.jsdelivr.net/npm/@tensorflow/tfjs -->
   <script src="app.js"></script>
   <script src="draw.js"></script>
