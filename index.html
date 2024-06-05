@@ -16,16 +16,23 @@
 
     <p>Train and visualize a Neural Network in JavaScript using tensorflow.js and the <a href="https://archive.ics.uci.edu/dataset/80/optical+recognition+of+handwritten+digits">Optical Recognition of Handwritten Digits Dataset</a></p>
 
-    <div id="number-indicator">Number: </div>
+    <h2>Training Data</h2>
+
+    <div id="number-indicator" style="padding: 10px;">Number: </div><br> 
+
     <canvas id="canvas" width="320" height="320"></canvas>
     <div class="controls">
       <button id="prev">Previous</button>
       <button id="next">Next</button>
+      <div style="padding: 10px">
+        <span id="current-index"></span> / <span id="dataset-length"></span>
+      </div>
     </div>
 
     <hr>
 
     <h2>Train Model</h2>
+    <div id="model-status">Model Status: <b class="not-trained">Not Trained</b></div>
 
     <div id="model-controls">
       <table>
@@ -53,7 +60,7 @@
       </table>
       <button id="create-train-model">Create and Train Model</button>
     </div>
-    <div id="model-status">Model Status: <b class="not-trained">Not Trained</b></div>
+
     <div id="model-output"></div>
 
     <hr>

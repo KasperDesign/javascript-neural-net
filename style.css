@@ -12,7 +12,7 @@ hr {
     border: 1px solid #777;
 }
 table {
-    margin: 10px;
+    margin: 10px 0 20px;
 }
 th {
     text-align: right;
@@ -80,7 +80,8 @@ a:hover {
     font-family:'Courier New', Courier, monospace;
 }
 #prediction-result {
-    margin-top: 20px;
+    font-size: 24pt;
+    margin: 20px;  
 }
 .controls {
     margin: 20px;

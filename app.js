@@ -9,6 +9,8 @@ fetch('data.txt')
   .then(response => response.text())
   .then(text => {
     data = text.trim().split('\n').map(line => line.split(',').map(Number));
+    shuffleArray(data);
+    document.getElementById('dataset-length').innerText = data.length - 1;
     visualizeNumber(currentIndex);
   });
 
@@ -20,16 +22,28 @@ const ctx = canvas.getContext('2d');
 document.getElementById('prev').addEventListener('click', () => {
   if (currentIndex > 0) {
     currentIndex--;
-    visualizeNumber(currentIndex);
+  } else {
+    currentIndex = data.length - 1;
   }
+  visualizeNumber(currentIndex);
 });
 
 document.getElementById('next').addEventListener('click', () => {
   if (currentIndex < data.length - 1) {
     currentIndex++;
-    visualizeNumber(currentIndex);
+  } else {
+    currentIndex = 0;
   }
+  visualizeNumber(currentIndex);
 });
+
+// Fisher-Yates shuffle algorithm to randomize array order
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]]; // Swap elements
+  }
+}
 
 // Function to visualize the number
 function visualizeNumber(index) {
@@ -37,6 +51,7 @@ function visualizeNumber(index) {
   const numberData = data[index].slice(); // Copy the data to avoid modifying the original
   const classCode = numberData.pop(); // The last value is the class code
   document.getElementById('number-indicator').innerText = `Number: ${classCode}`;
+  document.getElementById('current-index').innerText = index;
 
   for (let i = 0; i < 8; i++) {
     for (let j = 0; j < 8; j++) {
@@ -60,7 +75,8 @@ document.getElementById('create-train-model').addEventListener('click', async ()
   const { model: trainedModel, status } = await createAndTrainModel(epochs, batchSize, optimizer);
   model = trainedModel;  // Assign to the global model variable
 
-  console.log("model", model.model);
+  console.log("model", model);
+  console.log("JSON.stringify model", JSON.stringify(model));
 
   document.getElementById('model-status').innerHTML = `Model Status: <b class="${status.toLowerCase()}">${status}</b>`;
 });
@@ -71,9 +87,7 @@ async function createAndTrainModel(epochs, batchSize, optimizer) {
 
   const model = tf.sequential();
   model.add(tf.layers.dense({ inputShape: [64], units: 128, activation: 'relu' }));
-  
   model.add(tf.layers.dense({ units: 64, activation: 'relu' }));
-
   model.add(tf.layers.dense({ units: 10, activation: 'softmax' }));
 
   model.compile({ optimizer: optimizer, loss: 'sparseCategoricalCrossentropy', metrics: ['accuracy'] });
