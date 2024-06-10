@@ -2,6 +2,10 @@
 
 This project provides an interactive interface for visualizing and recognizing handwritten digits using a neural network. The digits are represented in an 8x8 grid where each cell's intensity ranges from 0 to 16. Users can visualize existing data, draw their own digits, and train a neural network model for digit recognition.
 
+## Live Demo
+
+[Link](https://digit-recognition.kasper.design/)
+
 ## Features
 
 - **Data Visualization**: Visualize existing digit data from a file.
